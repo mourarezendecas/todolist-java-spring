@@ -55,8 +55,13 @@ public class TaskController {
             return ResponseEntity.status(404).body("Task ID not found");
         }
         else {
-            Utils.copyNonNullProperties(updatedTask, task);
-            return ResponseEntity.status(201).body(task);
+            if(!task.getIdUser().equals(request.getAttribute("idUser"))){
+                return ResponseEntity.status(401).body("Unauthorized user trying to update a task");
+            }else{
+                Utils.copyNonNullProperties(updatedTask, task);
+                repository.save(task);
+                return ResponseEntity.status(201).body(task);
+            }
         }
     }
 }
